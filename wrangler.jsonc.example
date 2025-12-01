@@ -2,7 +2,7 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "sakeenah",
   "main": "./src/server/index.js",
-  "compatibility_date": "2025-05-25",
+  "compatibility_date": "2025-11-17",
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
@@ -15,8 +15,8 @@
   },
   "routes": [
     {
-      "pattern": "invitation.yourdomain.com/*",
-      "zone_name": "invitation.yourdomain.com",
+      "pattern": "invitation.yourdomain.com",
+      "custom_domain": true
     },
   ],
 }
