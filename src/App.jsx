@@ -15,14 +15,16 @@
  */
 
 // src/App.jsx
-import { useState } from 'react';
+import { useState, lazy, Suspense } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import Layout from '@/components/Layout';
-import MainContent from '@/pages/MainContent';
-import LandingPage from '@/pages/LandingPage';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { useInvitation } from '@/context/InvitationContext';
 import staticConfig from '@/config/config';
+
+// Lazy load components for better performance
+const Layout = lazy(() => import('@/components/Layout'));
+const MainContent = lazy(() => import('@/pages/MainContent'));
+const LandingPage = lazy(() => import('@/pages/LandingPage'));
 
 /**
  * App component serves as the root of the application.
@@ -105,15 +107,24 @@ function App() {
         <meta name="theme-color" content="#FDA4AF" /> {/* Rose-300 color */}
       </Helmet>
 
-      <AnimatePresence mode='wait'>
-        {!isInvitationOpen ? (
-          <LandingPage onOpenInvitation={() => setIsInvitationOpen(true)} />
-        ) : (
-          <Layout>
-            <MainContent />
-          </Layout>
-        )}
-      </AnimatePresence>
+      <Suspense fallback={
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-pink-50">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Memuat...</p>
+          </div>
+        </div>
+      }>
+        <AnimatePresence mode='wait'>
+          {!isInvitationOpen ? (
+            <LandingPage onOpenInvitation={() => setIsInvitationOpen(true)} />
+          ) : (
+            <Layout>
+              <MainContent />
+            </Layout>
+          )}
+        </AnimatePresence>
+      </Suspense>
     </HelmetProvider>
   );
 }

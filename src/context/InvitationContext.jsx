@@ -1,5 +1,6 @@
-import { createContext, useContext, useMemo, useState, useEffect } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { fetchInvitation } from '@/services/api';
 
 const InvitationContext = createContext(null);
@@ -51,38 +52,21 @@ export function InvitationProvider({ children }) {
     return null;
   }, [location.pathname, location.search]);
 
-  const [config, setConfig] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    if (!invitationUid) {
-      setIsLoading(false);
-      return;
-    }
-
-    const loadConfig = async () => {
-      try {
-        setIsLoading(true);
-        const response = await fetchInvitation(invitationUid);
-        if (response.success) {
-          setConfig(response.data);
-        } else {
-          setError('Failed to load invitation');
-        }
-      } catch (err) {
-        console.error('Error loading invitation config:', err);
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+  const { data: config, isLoading, error } = useQuery({
+    queryKey: ['invitation', invitationUid],
+    queryFn: async () => {
+      const response = await fetchInvitation(invitationUid);
+      if (response.success) {
+        return response.data;
       }
-    };
-
-    loadConfig();
-  }, [invitationUid]);
+      throw new Error('Failed to load invitation');
+    },
+    enabled: !!invitationUid,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+  });
 
   return (
-    <InvitationContext.Provider value={{ uid: invitationUid, config, isLoading, error }}>
+    <InvitationContext.Provider value={{ uid: invitationUid, config, isLoading, error: error?.message }}>
       {children}
     </InvitationContext.Provider>
   );

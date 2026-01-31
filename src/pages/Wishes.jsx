@@ -15,6 +15,7 @@ import {
     Loader2,
 } from 'lucide-react'
 import { useState, useEffect } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { formatEventDate } from '@/lib/formatEventDate';
 import { useInvitation } from '@/context/InvitationContext';
 import { fetchWishes, createWish } from '@/services/api';
@@ -22,15 +23,12 @@ import { safeBase64 } from '@/lib/base64';
 
 export default function Wishes() {
     const { uid } = useInvitation();
+    const queryClient = useQueryClient();
     const [showConfetti, setShowConfetti] = useState(false);
     const [newWish, setNewWish] = useState('');
     const [guestName, setGuestName] = useState('');
-    const [isSubmitting, setIsSubmitting] = useState(false);
     const [attendance, setAttendance] = useState('');
     const [isOpen, setIsOpen] = useState(false);
-    const [wishes, setWishes] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState(null);
 
     // Get guest name from URL parameter
     useEffect(() => {
@@ -54,31 +52,41 @@ export default function Wishes() {
         { value: 'MAYBE', label: 'Mungkin, saya akan konfirmasi nanti' }
     ];
 
-    // Fetch wishes on component mount
-    useEffect(() => {
-        if (!uid) {
-            setError('Invitation UID not found. Please check your URL.');
-            setIsLoading(false);
-            return;
-        }
-
-        const loadWishes = async () => {
-            try {
-                setIsLoading(true);
-                const response = await fetchWishes(uid);
-                if (response.success) {
-                    setWishes(response.data);
-                }
-            } catch (err) {
-                console.error('Error loading wishes:', err);
-                setError(err.message);
-            } finally {
-                setIsLoading(false);
+    // Fetch wishes using React Query
+    const { data: wishes = [], isLoading, error } = useQuery({
+        queryKey: ['wishes', uid],
+        queryFn: async () => {
+            const response = await fetchWishes(uid);
+            if (response.success) {
+                return response.data;
             }
-        };
+            throw new Error('Failed to load wishes');
+        },
+        enabled: !!uid,
+        staleTime: 30 * 1000, // 30 seconds
+    });
 
-        loadWishes();
-    }, [uid]);
+    // Mutation for creating wishes
+    const createWishMutation = useMutation({
+        mutationFn: (wishData) => createWish(uid, wishData),
+        onSuccess: (response) => {
+            if (response.success) {
+                // Optimistically update the cache
+                queryClient.setQueryData(['wishes', uid], (old = []) => [response.data, ...old]);
+                // Reset form
+                setNewWish('');
+                setGuestName('');
+                setAttendance('');
+                // Show confetti
+                setShowConfetti(true);
+                setTimeout(() => setShowConfetti(false), 3000);
+            }
+        },
+        onError: (err) => {
+            console.error('Error submitting wish:', err);
+            alert('Gagal mengirim pesan: ' + err.message);
+        },
+    });
 
     const handleSubmitWish = async (e) => {
         e.preventDefault();
@@ -89,34 +97,11 @@ export default function Wishes() {
             return;
         }
 
-        setIsSubmitting(true);
-        setError(null);
-
-        try {
-            const response = await createWish(uid, {
-                name: guestName.trim(),
-                message: newWish.trim(),
-                attendance: attendance || 'MAYBE'
-            });
-
-            if (response.success) {
-                // Add the new wish to the top of the list
-                setWishes(prev => [response.data, ...prev]);
-                // Reset form
-                setNewWish('');
-                setGuestName('');
-                setAttendance('');
-                // Show confetti
-                setShowConfetti(true);
-                setTimeout(() => setShowConfetti(false), 3000);
-            }
-        } catch (err) {
-            console.error('Error submitting wish:', err);
-            setError(err.message);
-            alert('Gagal mengirim pesan: ' + err.message);
-        } finally {
-            setIsSubmitting(false);
-        }
+        createWishMutation.mutate({
+            name: guestName.trim(),
+            message: newWish.trim(),
+            attendance: attendance || 'MAYBE'
+        });
     };
     const getAttendanceIcon = (status) => {
         const normalizedStatus = status?.toLowerCase();
@@ -189,14 +174,14 @@ export default function Wishes() {
                         </div>
                     )}
 
-                    {!isLoading && !error && wishes.length === 0 && (
+                    {!isLoading && !error && (!wishes || wishes.length === 0) && (
                         <div className="text-center py-12">
                             <MessageCircle className="w-12 h-12 text-gray-300 mx-auto mb-4" />
                             <p className="text-gray-500">Belum ada pesan. Jadilah yang pertama!</p>
                         </div>
                     )}
 
-                    {!isLoading && wishes.length > 0 && (
+                    {!isLoading && wishes && wishes.length > 0 && (
                         <AnimatePresence>
                             <Marquee
                                 pauseOnHover={true}
@@ -204,61 +189,61 @@ export default function Wishes() {
                                 className="[--duration:40s] [--gap:1rem] py-2"
                             >
                                 {wishes.map((wish, index) => (
-                                <motion.div
-                                    key={wish.id}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    className="group relative w-[320px]"
-                                >
-                                    {/* Background gradient */}
-                                    <div className="absolute inset-0 bg-gradient-to-r from-rose-100/50 to-pink-100/50 rounded-xl transform transition-transform group-hover:scale-[1.02] duration-300" />
+                                    <motion.div
+                                        key={wish.id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        transition={{ delay: index * 0.1 }}
+                                        className="group relative w-[300px] h-[160px] flex-shrink-0"
+                                    >
+                                        {/* Background gradient */}
+                                        <div className="absolute inset-0 bg-gradient-to-br from-rose-100/60 to-pink-100/60 rounded-2xl transform transition-transform group-hover:scale-[1.02] duration-300" />
 
-                                    {/* Card content */}
-                                    <div className="relative backdrop-blur-sm bg-white/80 p-4 rounded-xl border border-rose-100/50 shadow-md">
-                                        {/* Header */}
-                                        <div className="flex items-start space-x-3 mb-2">
-                                            {/* Avatar */}
-                                            <div className="flex-shrink-0">
-                                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-rose-400 to-pink-400 flex items-center justify-center text-white text-sm font-medium">
-                                                    {wish.name[0].toUpperCase()}
+                                        {/* Card content */}
+                                        <div className="relative h-full backdrop-blur-sm bg-white/90 p-4 rounded-2xl border border-rose-100/50 shadow-md flex flex-col">
+                                            {/* Header */}
+                                            <div className="flex items-center space-x-3 mb-3">
+                                                {/* Avatar */}
+                                                <div className="flex-shrink-0">
+                                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center text-white text-sm font-semibold shadow-sm">
+                                                        {wish.name[0].toUpperCase()}
+                                                    </div>
                                                 </div>
+
+                                                {/* Name, Time, and Attendance */}
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex items-center space-x-2">
+                                                        <h4 className="font-semibold text-gray-800 text-sm truncate max-w-[140px]">
+                                                            {wish.name}
+                                                        </h4>
+                                                        {getAttendanceIcon(wish.attendance)}
+                                                    </div>
+                                                    <div className="flex items-center space-x-1 text-gray-400 text-xs mt-0.5">
+                                                        <Clock className="w-3 h-3 flex-shrink-0" />
+                                                        <time className="truncate">
+                                                            {formatEventDate(wish.created_at, 'short', true)}
+                                                        </time>
+                                                    </div>
+                                                </div>
+
+                                                {/* New badge */}
+                                                {Date.now() - new Date(wish.created_at).getTime() < 3600000 && (
+                                                    <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-rose-100 text-rose-600 text-xs font-medium">
+                                                        New
+                                                    </span>
+                                                )}
                                             </div>
 
-                                            {/* Name, Time, and Attendance */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center space-x-2">
-                                                    <h4 className="font-medium text-gray-800 text-sm truncate">
-                                                        {wish.name}
-                                                    </h4>
-                                                    {getAttendanceIcon(wish.attending)}
-                                                </div>
-                                                <div className="flex items-center space-x-1 text-gray-500 text-xs">
-                                                    <Clock className="w-3 h-3" />
-                                                    <time className="truncate">
-                                                        {formatEventDate(wish.created_at, 'short', true)} • {formatEventDate(wish.created_at, 'time', true)} WIB
-                                                    </time>
-                                                </div>
+                                            {/* Message */}
+                                            <div className="flex-1 overflow-hidden">
+                                                <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                                                    {wish.message}
+                                                </p>
                                             </div>
                                         </div>
-
-                                        {/* Message */}
-                                        <p className="text-gray-600 text-sm leading-relaxed mb-2 line-clamp-3">
-                                            {wish.message}
-                                        </p>
-
-                                        {/* Optional: Time indicator for recent messages */}
-                                        {Date.now() - new Date(wish.created_at).getTime() < 3600000 && (
-                                            <div className="absolute top-2 right-2">
-                                                <span className="px-2 py-1 rounded-full bg-rose-100 text-rose-600 text-xs font-medium">
-                                                    New
-                                                </span>
-                                            </div>
-                                        )}
-                                    </div>
-                                </motion.div>
-                            ))}
+                                    </motion.div>
+                                ))}
                             </Marquee>
                         </AnimatePresence>
                     )}
@@ -368,26 +353,22 @@ export default function Wishes() {
                                 </div>
                             </div>
                             <div className="flex items-center justify-between mt-4">
-                                <div className="flex items-center space-x-2 text-gray-500">
-                                    <Smile className="w-5 h-5" />
-                                    <span className="text-sm">Berikan Doa Anda</span>
-                                </div>
                                 <motion.button
                                     type="submit"
-                                    disabled={isSubmitting}
-                                    whileHover={{ scale: isSubmitting ? 1 : 1.02 }}
-                                    whileTap={{ scale: isSubmitting ? 1 : 0.98 }}
-                                    className={`flex items-center space-x-2 px-6 py-2.5 rounded-xl text-white font-medium transition-all duration-200
-                    ${isSubmitting
+                                    disabled={createWishMutation.isPending}
+                                    whileHover={{ scale: createWishMutation.isPending ? 1 : 1.02 }}
+                                    whileTap={{ scale: createWishMutation.isPending ? 1 : 0.98 }}
+                                    className={`w-full flex items-center justify-center space-x-2 px-6 py-3 rounded-xl text-white font-medium transition-all duration-200
+                    ${createWishMutation.isPending
                                             ? 'bg-gray-400 cursor-not-allowed'
                                             : 'bg-rose-500 hover:bg-rose-600'}`}
                                 >
-                                    {isSubmitting ? (
+                                    {createWishMutation.isPending ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
                                         <Send className="w-4 h-4" />
                                     )}
-                                    <span>{isSubmitting ? 'Sedang Mengirim...' : 'Kirimkan Doa'}</span>
+                                    <span>{createWishMutation.isPending ? 'Sedang Mengirim...' : 'Kirimkan Doa'}</span>
                                 </motion.button>
                             </div>
                         </div>
