@@ -108,15 +108,15 @@ Sakeenah delivers a comprehensive digital invitation platform:
 
 ### Installation
 
-1. Clone the repository:
+1. **Clone and install dependencies:**
 
    ```bash
-   git clone https://github.com/mrofisr/islamic-wedding-invitation.git
-   cd islamic-wedding-invitation
+   git clone https://github.com/mrofisr/sakeenah.git
+   cd sakeenah
    bun install
    ```
 
-2. Initialize database:
+2. **Set up PostgreSQL database:**
 
    ```bash
    # Create database
@@ -126,41 +126,51 @@ Sakeenah delivers a comprehensive digital invitation platform:
    psql -d sakeenah -f src/server/db/schema.sql.example
    ```
 
-3. Configure environment:
+3. **Configure environment variables:**
 
    ```bash
    cp .env.example .env
    ```
 
-   Edit `.env`:
+   The `.env` file contains:
 
    ```env
    # Frontend
    VITE_API_URL=http://localhost:3000
-   VITE_INVITATION_UID=your-wedding-uid
 
    # Backend
-   DATABASE_URL=postgresql://user:password@localhost:5432/sakeenah
+   DATABASE_URL=postgresql://username:password@localhost:5432/sakeenah
    PORT=3000
    ```
 
-4. Add wedding data:
+   Update `DATABASE_URL` with your PostgreSQL credentials.
+
+4. **Add your wedding data:**
 
    ```bash
-   cp src/server/db/add-wedding.sql.example src/server/db/my-wedding.sql
-   # Edit my-wedding.sql with your details
-   psql -d sakeenah -f src/server/db/my-wedding.sql
+   # Copy the SQL template
+   cp src/server/db/add-wedding.sql.example my-wedding.sql
+
+   # Edit my-wedding.sql with your wedding details
+   # Then insert into database
+   psql -d sakeenah -f my-wedding.sql
    ```
 
-5. Start development servers:
+   This will create your wedding invitation with a unique UID (e.g., `ahmad-fatimah-2025`).
+
+5. **Start development servers:**
 
    ```bash
-   bun run dev  # Runs both client and server concurrently
+   bun run dev
    ```
 
-6. Access application:
+   This runs both frontend (Vite) and backend (Hono API) concurrently.
+
+6. **Access your invitation:**
    - Frontend: `http://localhost:5173/your-wedding-uid`
-   - API: `http://localhost:3000/api/invitation/your-wedding-uid`
+   - API endpoint: `http://localhost:3000/api/invitation/your-wedding-uid`
+
+Replace `your-wedding-uid` with the UID you defined in your SQL file.
 
 ## Personalized Invitations
 
