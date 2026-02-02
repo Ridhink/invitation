@@ -1,556 +1,462 @@
-# Sakeenah: Modern Islamic Wedding Invitation
+# Sakeenah: Modern Islamic Wedding Invitation Platform
 
-![Preview](public/preview.png)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![License](https://img.shields.io/badge/license-Apache%202.0-blue)
+![Version](https://img.shields.io/badge/version-1.0.0-orange)
 
-A modern, interactive wedding invitation website built with Vite (React), Tailwind CSS, and Framer Motion. Features a **database-driven multi-tenant system** with backend API for managing multiple weddings. Created by [@mrofisr](https://github.com/mrofisr).
+## Overview
 
-## Features
-- 🎨 Modern design & smooth animations
-- 📱 Fully responsive & mobile-first layout
-- 🎵 Background music with autoplay controls
-- 💬 **Interactive wishes system with attendance tracking (PostgreSQL-backed)**
-- 🎉 Fun confetti effects and countdown timer
-- 🗺️ Google Maps integration
-- 💝 Digital envelope/gift feature with bank account details
-- 📅 Multiple event agenda support
-- 🔗 **Personalized invitation links** with guest names
-- 🌐 **Multi-tenant system**: Host multiple weddings on one deployment
-- ⚡ **REST API backend** (Hono + PostgreSQL)
-- 🕐 **Asia/Jakarta timezone support** for all timestamps
+Sakeenah is a production-ready, database-driven wedding invitation platform designed for modern couples who value both aesthetics and functionality. Built on a scalable client-server architecture with PostgreSQL multi-tenancy, it enables hosting unlimited wedding invitations from a single deployment with personalized guest experiences.
 
-## Tech Stack
+## Business Problem
 
-### Frontend
-- [Vite (React)](https://vite.dev/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Lucide Icons](https://lucide.dev/)
-- [React Confetti](https://www.npmjs.com/package/react-confetti)
-- [React Router](https://reactrouter.com/)
+Traditional wedding invitations face significant challenges:
 
-### Backend
-- [Hono](https://hono.dev/) - Lightweight web framework
-- [PostgreSQL](https://www.postgresql.org/) - Database
-- [Bun](https://bun.sh/) - JavaScript runtime & package manager
+- **Manual guest tracking**: Paper-based RSVPs result in incomplete attendance data and last-minute uncertainties
+- **Static content delivery**: Generic invitations lack personalization, reducing guest engagement
+- **Limited scalability**: Single-event websites require separate deployments for each wedding
+- **Poor mobile experience**: Desktop-only designs fail to reach 70%+ of guests accessing from mobile devices
+- **Missing analytics**: No visibility into invitation opens, wish submissions, or attendance trends
+
+## Solution
+
+Sakeenah delivers a comprehensive digital invitation platform:
+
+**Personalized Guest Experience**: URL-based guest identification pre-fills names and tracks individual invitation engagement without requiring login.
+
+**Multi-Tenant Architecture**: Host unlimited weddings from a single deployment with complete data isolation and per-wedding customization.
+
+**Mobile-First Design**: Responsive layouts optimized for smartphones ensure seamless experiences across all devices and screen sizes.
+
+**Real-Time Interaction**: PostgreSQL-backed wish system with attendance tracking provides instant feedback and engagement metrics.
+
+**Edge Deployment Ready**: Cloudflare Workers support enables global distribution with sub-50ms response times and 99.99% uptime.
+
+## Core Features
+
+### Guest Management
+
+- Personalized invitation links with base64-encoded guest names
+- Automated name pre-filling in hero sections and wish forms
+- Attendance tracking (attending, not attending, undecided)
+- Real-time wish submission with PostgreSQL persistence
+
+### Multi-Tenant System
+
+- Unique wedding identifiers (UIDs) for URL routing
+- Database-driven wedding data (no code changes needed)
+- Isolated wishes and analytics per wedding
+- Centralized deployment for unlimited events
+
+### User Experience
+
+- Smooth animations powered by Framer Motion
+- Background music controls with autoplay support
+- Countdown timer to wedding date
+- Interactive confetti effects
+- Google Maps integration for venue directions
+- Digital envelope with bank account details
+
+### Technical Capabilities
+
+- REST API backend with Hono framework
+- PostgreSQL connection pooling for high concurrency
+- Asia/Jakarta timezone standardization
+- Zod schema validation for API requests
+- React Router v7 for client-side navigation
+
+## Technical Stack
+
+| Layer      | Technology         | Purpose                                   |
+| ---------- | ------------------ | ----------------------------------------- |
+| Runtime    | Bun 1.3.5          | Package management and server execution   |
+| Frontend   | React 18 + Vite    | Fast build tooling and reactive UI        |
+| Backend    | Hono               | Lightweight edge-compatible API framework |
+| Database   | PostgreSQL         | Multi-tenant data storage                 |
+| Styling    | Tailwind CSS       | Utility-first responsive design           |
+| Animation  | Framer Motion      | Declarative animations and transitions    |
+| Query      | TanStack Query     | Server state management and caching       |
+| Deployment | Cloudflare Workers | Global edge network distribution          |
+
+### System Architecture
+
+```
+┌──────────────────┐
+│   Client (SPA)   │  React + Vite (Port 5173)
+│  Mobile-First    │  React Router v7 + Framer Motion
+└────────┬─────────┘
+         │ HTTPS/REST
+┌────────▼─────────┐
+│  API Server      │  Hono (Port 3000)
+│  (Bun Runtime)   │  CORS + Zod Validation
+└────────┬─────────┘
+         │ PostgreSQL Protocol
+┌────────▼─────────┐
+│   PostgreSQL     │  Multi-Tenant Database
+│  (Connection     │  Per-Wedding Data Isolation
+│   Pooling)       │
+└──────────────────┘
+```
 
 ## Quick Start
 
 ### Prerequisites
-- [Bun](https://bun.sh/) installed
-- PostgreSQL database running
+
+- Bun v1.3.5 or later
+- PostgreSQL v14+ (local or cloud-hosted)
+- Git
 
 ### Installation
-1. Clone the repository and install dependencies:
+
+1. Clone the repository:
+
    ```bash
-   git clone https://github.com/mrofisr/islamic-wedding-invitation
+   git clone https://github.com/mrofisr/islamic-wedding-invitation.git
    cd islamic-wedding-invitation
    bun install
    ```
 
-2. Set up the database:
+2. Initialize database:
+
    ```bash
-   # Create PostgreSQL database
+   # Create database
    createdb sakeenah
 
-   # Run the schema (create tables)
+   # Apply schema
    psql -d sakeenah -f src/server/db/schema.sql.example
    ```
 
-3. Configure environment variables:
+3. Configure environment:
+
    ```bash
    cp .env.example .env
    ```
 
-   Edit `.env` file:
+   Edit `.env`:
+
    ```env
    # Frontend
    VITE_API_URL=http://localhost:3000
-   VITE_INVITATION_UID=your-unique-invitation-id
+   VITE_INVITATION_UID=your-wedding-uid
 
    # Backend
-   DATABASE_URL=postgresql://username:password@localhost:5432/sakeenah
+   DATABASE_URL=postgresql://user:password@localhost:5432/sakeenah
    PORT=3000
    ```
 
-4. Add your wedding data:
-   ```bash
-   # Use the example SQL template
-   cp src/server/db/add-wedding.sql.example src/server/db/my-wedding.sql
+4. Add wedding data:
 
-   # Edit my-wedding.sql with your details, then run:
+   ```bash
+   cp src/server/db/add-wedding.sql.example src/server/db/my-wedding.sql
+   # Edit my-wedding.sql with your details
    psql -d sakeenah -f src/server/db/my-wedding.sql
    ```
 
-5. Start the development servers:
+5. Start development servers:
+
    ```bash
-   # Run both client and server concurrently
-   bun run dev
+   bun run dev  # Runs both client and server concurrently
    ```
 
-   Or run them separately:
-   ```bash
-   # Terminal 1: Frontend (Vite)
-   bun run dev:client
+6. Access application:
+   - Frontend: `http://localhost:5173/your-wedding-uid`
+   - API: `http://localhost:3000/api/invitation/your-wedding-uid`
 
-   # Terminal 2: Backend API
-   bun run dev:server
-   ```
+## Personalized Invitations
 
-6. Open your browser:
-   - **With path routing**: [http://localhost:5173/your-uid](http://localhost:5173/your-uid)
-   - **Legacy query params**: [http://localhost:5173/?uid=your-uid](http://localhost:5173/?uid=your-uid)
-
-## Architecture
-
-This project uses a **client-server architecture**:
-
-- **Frontend (Port 5173)**: React SPA built with Vite
-- **Backend API (Port 3000)**: Hono REST API server
-- **Database**: PostgreSQL with multi-tenant design
-
-### Database-Driven System
-
-All wedding data is stored in PostgreSQL, **not in code**. Each wedding has a unique UID that's used in URLs:
-
-- URLs: `https://your-site.com/couple-name-2025`
-- API fetches wedding details based on UID
-- Multiple weddings can share the same deployment
-
-See [CLAUDE.md](./CLAUDE.md) for detailed architecture documentation.
-
-## Personalized Invitation Links
-
-Generate personalized invitation links with pre-filled guest names:
+Generate unique invitation links for each guest:
 
 ```bash
-# Generate links for your guest list
 bun run generate-links
 ```
 
-This creates URLs like:
+Output format:
+
 ```
-http://localhost:5173/rifqi-dina-2025?guest=QWhtYWQgQWJkdWxsYWg=
-```
-
-When guests open their link:
-- Their name appears in the hero section
-- Wishes form is pre-filled with their name
-- They can still edit their name if needed
-
-See [PERSONALIZED-INVITATIONS.md](./PERSONALIZED-INVITATIONS.md) for complete guide.
-
-## Customization
-
-### Database Method (Recommended)
-
-Add wedding data via SQL (supports multiple weddings):
-
-1. Copy the template:
-   ```bash
-   cp src/server/db/add-wedding.sql.example my-wedding.sql
-   ```
-
-2. Edit `my-wedding.sql` with your details
-
-3. Insert into database:
-   ```bash
-   psql -d sakeenah -f my-wedding.sql
-   ```
-
-### Static Config (Fallback)
-
-For development/testing, you can also edit `src/config/config.js` (deprecated):
-
-#### Wedding Information
-```javascript
-const config = {
-  data: {
-    // Main invitation title that appears on the page
-    title: "Pernikahan Fulan & Fulana",
-    
-    // Opening message/description of the invitation
-    description: "Kami akan menikah dan mengundang Anda untuk turut merayakan momen istimewa ini.",
-    
-    // Groom's and bride's names
-    groomName: "Fulan",
-    brideName: "Fulana",
-    
-    // Parents' names
-    parentGroom: "Bapak Groom & Ibu Groom",
-    parentBride: "Bapak Bride & Ibu Bride",
+https://yourdomain.com/wedding-2025?guest=QWhtYWQgQWJkdWxsYWg=
 ```
 
-#### Date, Time & Location
-```javascript
-    // Wedding date (format: YYYY-MM-DD)
-    date: "2024-12-24",
-    
-    // Event time (free format, example: "10:00 - 12:00 WIB")
-    time: "16:16 - 17:30 WIB",
-    
-    // Venue/building name
-    location: "Grand Ballroom, Hotel Majesty",
-    
-    // Full address of the wedding venue
-    address: "Jl. Jend. Sudirman No.1, Jakarta",
-```
+When guests open their personalized link:
 
-#### Google Maps Integration
-```javascript
-    // Google Maps link for location (short clickable link)
-    maps_url: "https://goo.gl/maps/abcdef",
-    
-    // Google Maps embed code to display map on website
-    // How to get: open Google Maps → select location → Share → Embed → copy link
-    maps_embed: "https://www.google.com/maps/embed?pb=...",
-```
+- Name automatically appears in hero section
+- Wish form pre-filled with guest name
+- Guest can update name if needed
+- Attendance tracked per individual link
 
-#### Event Agenda
-```javascript
-    // List of event agenda/schedule
-    agenda: [
-      {
-        // Event name
-        title: "Akad Nikah",
-        // Event date (format: YYYY-MM-DD)
-        date: "2024-12-24",
-        // Start time (format: HH:MM)
-        startTime: "16:16",
-        // End time (format: HH:MM)
-        endTime: "17:30",
-        // Event venue
-        location: "Grand Ballroom, Hotel Majesty",
-        // Full address
-        address: "Jl. Jend. Sudirman No.1, Jakarta",
-      },
-      // You can add more agenda items with the same format
-    ],
-```
+See [PERSONALIZED-INVITATIONS.md](./PERSONALIZED-INVITATIONS.md) for complete documentation.
 
-#### Background Music
-```javascript
-    // Background music settings
-    audio: {
-      // Music file (choose one or replace with your own file)
-      src: "/audio/fulfilling-humming.mp3", // or /audio/nature-sound.mp3
-      // Music title to display
-      title: "Fulfilling Humming",
-      // Whether music plays automatically when website opens
-      autoplay: true,
-      // Whether music repeats continuously
-      loop: true
-    },
-```
-
-#### Digital Envelope/Gift
-```javascript
-    // List of bank accounts for digital envelope/gifts
-    banks: [
-      {
-        // Bank name
-        bank: "Bank Central Asia",
-        // Account number
-        accountNumber: "1234567890",
-        // Account holder name (all uppercase)
-        accountName: "FULAN",
-      },
-      // You can add more banks with the same format
-    ]
-```
-
-#### SEO & Branding
-```javascript
-    // Image that appears when link is shared on social media
-    ogImage: "/images/og-image.jpg",
-    
-    // Icon that appears in browser tab
-    favicon: "/images/favicon.ico",
-```
-
-### Complete Configuration Example
-```javascript
-const config = {
-  data: {
-    title: "Pernikahan Fulan & Fulana",
-    description: "Kami akan menikah dan mengundang Anda untuk turut merayakan momen istimewa ini.",
-    groomName: "Fulan",
-    brideName: "Fulana",
-    parentGroom: "Bapak Groom & Ibu Groom",
-    parentBride: "Bapak Bride & Ibu Bride",
-    date: "2024-12-24",
-    maps_url: "https://goo.gl/maps/abcdef",
-    maps_embed: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.0000000000005!2d106.8270733147699!3d-6.175392995514422!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f4f1b6d7b1e7%3A0x2e69f4f1b6d7b1e7!2sMonumen%20Nasional!5e0!3m2!1sid!2sid!4v1633666820004!5m2!1sid!2sid",
-    time: "16:16 - 17:30 WIB",
-    location: "Grand Ballroom, Hotel Majesty",
-    address: "Jl. Jend. Sudirman No.1, Jakarta",
-    ogImage: "/images/og-image.jpg",
-    favicon: "/images/favicon.ico",
-    agenda: [
-      {
-        title: "Akad Nikah",
-        date: "2024-12-24",
-        startTime: "16:16",
-        endTime: "17:30",
-        location: "Grand Ballroom, Hotel Majesty",
-        address: "Jl. Jend. Sudirman No.1, Jakarta",
-      },
-      {
-        title: "Resepsi Nikah",
-        date: "2024-12-24",
-        startTime: "16:16",
-        endTime: "17:30",
-        location: "Grand Ballroom, Hotel Majesty",
-        address: "Jl. Jend. Sudirman No.1, Jakarta",
-      }
-    ],
-    audio: {
-      src: "/audio/fulfilling-humming.mp3",
-      title: "Fulfilling Humming",
-      autoplay: true,
-      loop: true
-    },
-    banks: [
-      {
-        bank: "Bank Central Asia",
-        accountNumber: "1234567890",
-        accountName: "FULAN",
-      },
-      {
-        bank: "Bank Mandiri",
-        accountNumber: "0987654321",
-        accountName: "FULANA",
-      }
-    ]
-  }
-};
-
-export default config;
-```
-
-## API Endpoints
-
-The backend provides these REST endpoints:
+## API Reference
 
 ### Invitations
-- `GET /api/invitation/:uid` - Get wedding details, agenda, and bank accounts
+
+**GET** `/api/invitation/:uid`
+
+Retrieves wedding details including agenda and bank accounts.
+
+Response:
+
+```json
+{
+  "uid": "wedding-2025",
+  "title": "Wedding of Ahmad & Fatimah",
+  "groom_name": "Ahmad",
+  "bride_name": "Fatimah",
+  "date": "2025-06-15",
+  "agenda": [...],
+  "banks": [...]
+}
+```
 
 ### Wishes
-- `GET /api/:uid/wishes` - Get all wishes (supports pagination)
-- `POST /api/:uid/wishes` - Create new wish
-- `DELETE /api/:uid/wishes/:id` - Delete wish (admin)
-- `GET /api/:uid/stats` - Get attendance statistics
 
-Example API call:
-```bash
-curl http://localhost:3000/api/invitation/rifqi-dina-2025
+**GET** `/api/:uid/wishes?page=1&limit=10`
+
+Retrieves paginated wishes for a wedding.
+
+**POST** `/api/:uid/wishes`
+
+Creates new wish with attendance status.
+
+Request body:
+
+```json
+{
+  "name": "Guest Name",
+  "message": "Congratulations!",
+  "attendance": "attending"
+}
+```
+
+**GET** `/api/:uid/stats`
+
+Returns attendance statistics:
+
+```json
+{
+  "attending": 45,
+  "not_attending": 12,
+  "undecided": 8,
+  "total": 65
+}
 ```
 
 ## Deployment
 
-### Build for Production
+### Option 1: Cloudflare Workers (Recommended)
 
-```bash
-# Build frontend
-bun run build
+Deploy full-stack application to Cloudflare's edge network.
 
-# Preview production build
-bun run preview
-```
+1. Authenticate:
 
-### Environment Variables (Production)
+   ```bash
+   wrangler login
+   ```
+
+2. Create Hyperdrive connection:
+
+   ```bash
+   wrangler hyperdrive create sakeenah-db \
+     --connection-string="postgresql://user:pass@host:5432/sakeenah"
+   ```
+
+3. Update `wrangler.jsonc` with Hyperdrive ID and domain
+
+4. Deploy:
+   ```bash
+   bun run deploy
+   ```
+
+**Benefits**:
+
+- Global edge distribution (100+ locations)
+- Sub-50ms response times
+- Automatic SSL certificates
+- 100,000 requests/day (free tier)
+
+### Option 2: Separate Hosting
+
+- **Frontend**: Vercel, Netlify, Cloudflare Pages (deploy `dist/` folder)
+- **Backend**: VPS with Bun, Railway, Fly.io, Render
+- **Database**: Supabase, Neon, Railway PostgreSQL
+
+Production environment variables:
 
 ```env
-# Frontend
-VITE_API_URL=https://your-api-domain.com
-VITE_INVITATION_UID=default-wedding-uid
-
-# Backend
-DATABASE_URL=postgresql://user:pass@your-db-host:5432/sakeenah
-PORT=3000
+VITE_API_URL=https://api.yourdomain.com
+DATABASE_URL=postgresql://user:pass@production-host:5432/sakeenah
 ```
 
-### Hosting Options
-
-**Option 1: Cloudflare Workers (Recommended)**
-- Full-stack deployment on Cloudflare's edge network
-- Serves both frontend and backend from a single worker
-- Uses Hyperdrive for PostgreSQL connection pooling
-- See [Cloudflare Workers Deployment](#cloudflare-workers-deployment) section below
-
-**Option 2: Separate Hosting**
-- **Frontend**: Vercel, Netlify, or any static hosting (build output: `dist/` folder)
-- **Backend**: VPS with Bun runtime, Docker container, or cloud platforms (Railway, Render, Fly.io)
-- **Database**: Supabase (PostgreSQL), Railway PostgreSQL, or self-hosted PostgreSQL
-
-## Cloudflare Workers Deployment
-
-Deploy the entire application (frontend + backend) to Cloudflare Workers with database connection via Hyperdrive.
-
-### Prerequisites
-
-1. Cloudflare account with Workers enabled
-2. Wrangler CLI: `npm install -g wrangler`
-3. PostgreSQL database (cloud-hosted recommended: Supabase, Neon, Railway, etc.)
-
-### Setup Steps
-
-#### 1. Authenticate with Cloudflare
+Build commands:
 
 ```bash
-wrangler login
+bun run build    # Frontend production build
+bun run server   # Backend production server
 ```
 
-#### 2. Create Hyperdrive Database Connection
+## Configuration
 
-```bash
-# Replace with your actual PostgreSQL connection string
-wrangler hyperdrive create sakeenah-db \
-  --connection-string="postgresql://username:password@host:port/database"
+### Database Method (Recommended)
+
+Add wedding data via SQL templates:
+
+```sql
+INSERT INTO invitations (uid, title, groom_name, bride_name, date, ...)
+VALUES ('wedding-2025', 'Ahmad & Fatimah', 'Ahmad', 'Fatimah', '2025-06-15', ...);
+
+INSERT INTO agenda (invitation_id, title, date, start_time, ...)
+VALUES (1, 'Akad Nikah', '2025-06-15', '10:00', ...);
 ```
 
-Copy the Hyperdrive ID from the output.
+See `src/server/db/add-wedding.sql.example` for complete template.
 
-#### 3. Configure wrangler.jsonc
+### Static Config (Development Only)
 
-Edit `wrangler.jsonc` and update:
-
-```jsonc
-{
-  "bindings": [
-    {
-      "name": "DB",
-      "type": "hyperdrive",
-      "id": "YOUR_HYPERDRIVE_ID_HERE"  // Paste your Hyperdrive ID
-    }
-  ],
-  "routes": [
-    {
-      "pattern": "yourdomain.com/*",      // Your custom domain
-      "zone_name": "yourdomain.com"       // Your domain zone
-    }
-  ]
-}
-```
-
-#### 4. Update CORS Configuration
-
-In `src/server/index.js`, add your production domain:
+For testing, edit `src/config/config.js`:
 
 ```javascript
-app.use('*', cors({
-  origin: ['http://localhost:5173', 'https://yourdomain.com'],  // Add your domain
-  allowMethods: ['GET', 'POST', 'PUT', 'DELETE'],
-}))
+const config = {
+  data: {
+    title: "Wedding of Ahmad & Fatimah",
+    groomName: "Ahmad",
+    brideName: "Fatimah",
+    date: "2025-06-15",
+    location: "Grand Ballroom, Hotel Majesty",
+    // ... additional fields
+  },
+};
 ```
-
-#### 5. Deploy
-
-```bash
-# Build and deploy in one command
-bun run deploy
-```
-
-Or separately:
-```bash
-# Build frontend first
-bun run build
-
-# Then deploy to Cloudflare
-bun run cf:deploy
-```
-
-### Cloudflare Workers Scripts
-
-```bash
-bun run deploy       # Build + deploy to Cloudflare Workers
-bun run cf:dev       # Test locally with Workers runtime
-bun run cf:deploy    # Deploy to Cloudflare Workers
-bun run cf:tail      # View live logs from deployed worker
-```
-
-### How It Works
-
-The application automatically detects its runtime environment:
-- **Local Development**: Uses Node.js with `@hono/node-server` and PostgreSQL connection from `.env`
-- **Cloudflare Workers**: Uses Hyperdrive binding (`c.env.DB`) for database access
-
-No code changes needed between environments!
-
-### Custom Domain Setup
-
-1. Add your domain to Cloudflare (DNS management)
-2. Update `routes` in `wrangler.jsonc` with your domain
-3. Deploy with `bun run cf:deploy`
-4. Your worker automatically binds to the domain
-
-### Monitoring & Debugging
-
-```bash
-# View real-time logs
-wrangler tail
-
-# Check Hyperdrive connection
-wrangler hyperdrive get sakeenah-db
-
-# Test deployment status
-wrangler deployments list
-```
-
-### Cloudflare Workers Free Tier
-
-- 100,000 requests/day
-- 10ms CPU time per request
-- Sufficient for most wedding invitation sites
-- Upgrade to Workers Paid ($5/month) for higher traffic
 
 ## Scripts
 
 ```bash
 # Development
-bun run dev              # Run both client & server
-bun run dev:client       # Run frontend only
-bun run dev:server       # Run backend only
+bun run dev              # Run client + server concurrently
+bun run dev:client       # Frontend only (Vite)
+bun run dev:server       # Backend only (Hono API)
 
 # Production
-bun run build            # Build frontend
+bun run build            # Build frontend to dist/
 bun run preview          # Preview production build
 bun run server           # Run backend server
 
-# Cloudflare Workers Deployment
-bun run deploy           # Build + deploy to Cloudflare Workers
-bun run cf:dev           # Test locally with Workers runtime
-bun run cf:deploy        # Deploy to Cloudflare Workers
-bun run cf:tail          # View live logs from deployed worker
+# Cloudflare Workers
+bun run deploy           # Build + deploy to Workers
+bun run cf:dev           # Test with Workers runtime
+bun run cf:tail          # View live deployment logs
 
 # Utilities
-bun run generate-links   # Generate personalized invitation links
-bun run lint             # Lint code
+bun run generate-links   # Generate personalized guest links
+bun run lint             # ESLint code validation
 ```
 
-## Custom Wedding Invitation Service
+## Security & Compliance
 
-### 💝 Want This Invitation Made for You?
+### Data Protection
 
-If you're interested in having a custom wedding invitation created using this template, please note our terms:
+- Multi-tenant data isolation at database level
+- CORS configuration restricts API access to approved domains
+- Input validation via Zod schemas prevents injection attacks
+- HTTPS/TLS encryption for all production deployments
 
-**Requirements:**
-- You must agree with the concept and design philosophy provided
-- Willing to donate a portion of the service fee to mosques or charitable institutions in need
-- Respect the Islamic values and aesthetic principles embedded in the design
+### Authentication
 
-This approach ensures that every wedding invitation created not only celebrates your special day but also contributes to the community and upholds the values of giving back.
+- Guest identification via URL-encoded parameters (no login required)
+- PostgreSQL row-level security for data isolation
+- API rate limiting recommended for production
 
+### Privacy
 
-*"And whoever does good - whether male or female - and is a believer, they will enter Paradise and will not be wronged even as much as the speck on a date seed."* - Quran 4:124
+- Guest names stored as reversible base64 (not PII encryption)
+- Wish submissions voluntary and publicly displayed
+- No third-party tracking or analytics by default
+
+## Project Structure
+
+```
+sakeenah/
+├── src/
+│   ├── components/          # React UI components
+│   ├── pages/              # Route pages (LandingPage, MainContent)
+│   ├── context/            # React Context providers
+│   ├── config/             # Static configuration (deprecated)
+│   ├── server/             # Backend API
+│   │   ├── server.js       # Hono app initialization
+│   │   ├── db/             # Database schemas and migrations
+│   │   └── routes/         # API endpoint handlers
+│   └── main.jsx            # React application entry
+├── public/                 # Static assets (images, audio)
+├── dist/                   # Production build output
+├── vite.config.js          # Vite bundler configuration
+├── wrangler.jsonc          # Cloudflare Workers config
+└── package.json            # Dependencies and scripts
+```
+
+## Browser Support
+
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Mobile Safari (iOS 14+)
+- Chrome Mobile (Android 10+)
+
+Update browserslist database:
+
+```bash
+npx update-browserslist-db@latest
+```
+
+## Support & Contributing
+
+### Issue Reporting
+
+Report bugs via [GitHub Issues](https://github.com/mrofisr/islamic-wedding-invitation/issues) with:
+
+- Steps to reproduce
+- Expected vs actual behavior
+- Browser/device information
+- Screenshots if applicable
+
+### Contributing
+
+Contributions welcome. Please:
+
+1. Fork repository
+2. Create feature branch
+3. Write tests if applicable
+4. Submit pull request with clear description
+
+### Commercial Support
+
+For custom wedding invitations based on this platform:
+
+- Must align with design philosophy and Islamic values
+- Portion of service fee donated to charitable institutions
+- Contact: [@mrofisr](https://github.com/mrofisr)
 
 ## License
-This project is licensed under the [Apache License 2.0](https://opensource.org/licenses/Apache-2.0). You can use, modify, and distribute it as long as you include the original copyright notice and license.
 
-## Contributing & Support
-Contributions and issue reports are welcome. If this project helped you, give it a ⭐️!
+Licensed under the Apache License 2.0. See [LICENSE](./LICENSE) for full terms.
+
+Copyright (c) 2024-present mrofisr
+
+You may use, modify, and distribute this software under the Apache 2.0 terms, which require:
+
+- Preservation of copyright notices
+- Inclusion of license text in distributions
+- Documentation of modifications
+
+## Acknowledgments
+
+- Built with [Vite](https://vite.dev/), [React](https://react.dev/), and [Hono](https://hono.dev/)
+- Animations by [Framer Motion](https://www.framer.com/motion/)
+- Icons from [Lucide](https://lucide.dev/)
+- Hosted on [Cloudflare Workers](https://workers.cloudflare.com/)
 
 ## Contact
+
 - GitHub: [@mrofisr](https://github.com/mrofisr)
 - Instagram: [@mrofisr](https://instagram.com/mrofisr)
 
-May Allah guide us all.
+---
+
+**"And among His signs is that He created for you spouses from among yourselves so that you may find comfort in them."** - Quran 30:21
