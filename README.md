@@ -183,8 +183,6 @@ When guests open their personalized link:
 - Guest can update name if needed
 - Attendance tracked per individual link
 
-See [PERSONALIZED-INVITATIONS.md](./PERSONALIZED-INVITATIONS.md) for complete documentation.
-
 ## API Reference
 
 ### Invitations
