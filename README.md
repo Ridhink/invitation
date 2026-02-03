@@ -428,12 +428,21 @@ Report bugs via [GitHub Issues](https://github.com/mrofisr/islamic-wedding-invit
 
 ### Contributing
 
-Contributions welcome. Please:
+We welcome contributions from developers, designers, and the Muslim community! Please read our [Contributing Guide](CONTRIBUTING.md) for detailed information on:
 
-1. Fork repository
-2. Create feature branch
-3. Write tests if applicable
-4. Submit pull request with clear description
+- Code of conduct
+- Development setup
+- Coding standards
+- Pull request process
+- Cultural guidelines
+
+Quick start for contributors:
+
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Fork the repository
+3. Create a feature branch
+4. Make your changes following our guidelines
+5. Submit a pull request
 
 ### Commercial Support
 
