@@ -8,6 +8,8 @@
 
 Sakeenah is a production-ready, database-driven wedding invitation platform designed for modern couples who value both aesthetics and functionality. Built on a scalable client-server architecture with PostgreSQL multi-tenancy, it enables hosting unlimited wedding invitations from a single deployment with personalized guest experiences.
 
+![Sakeenah Preview](public/preview.png)
+
 ## Business Problem
 
 Traditional wedding invitations face significant challenges:
