@@ -5,18 +5,15 @@ import {
   Home,
   CalendarHeart,
   MapPin,
-  Gift,
   MessageCircleHeart
 } from 'lucide-react';
 import { cn } from "@/lib/utils";
-import { useConfig } from '@/hooks/useConfig';
 
 const baseMenuItems = [
-  { icon: Home, label: 'Beranda', href: '#home', id: 'home' },
-  { icon: CalendarHeart, label: 'Event', href: '#event', id: 'event' },
-  { icon: MapPin, label: 'Lokasi', href: '#location', id: 'location' },
-  { icon: Gift, label: 'Hadiah', href: '#gifts', id: 'gifts', requiresBanks: true },
-  { icon: MessageCircleHeart, label: 'Harapan', href: '#wishes', id: 'wishes' },
+  { icon: Home, label: 'Home', href: '#home', id: 'home' },
+  { icon: CalendarHeart, label: 'Events', href: '#event', id: 'event' },
+  { icon: MapPin, label: 'Location', href: '#location', id: 'location' },
+  { icon: MessageCircleHeart, label: 'Wishes', href: '#wishes', id: 'wishes' },
 ];
 
 /**
@@ -36,19 +33,8 @@ const baseMenuItems = [
  * @returns {JSX.Element} A JSX element containing the animated bottom navigation bar with auto-detection.
  */
 const BottomBar = () => {
-  const config = useConfig();
   const [active, setActive] = React.useState('home');
-
-  // Filter menu items based on config - hide gifts when no banks configured
-  const menuItems = useMemo(() => {
-    const hasBanks = config?.banks && config.banks.length > 0;
-    return baseMenuItems.filter(item => {
-      if (item.requiresBanks && !hasBanks) {
-        return false;
-      }
-      return true;
-    });
-  }, [config?.banks]);
+  const menuItems = baseMenuItems;
 
   // Function to handle smooth scrolling when clicking menu items
   const handleMenuClick = useCallback((e, href, id) => {
@@ -105,65 +91,46 @@ const BottomBar = () => {
   }, [menuItems]);
 
   return (
-    <div className="fixed bottom-4 left-0 right-0 z-50 flex justify-center px-4">
-      <motion.div
-        className="w-auto"
-        initial={{ y: 100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
-      >
-        <div className="backdrop-blur-md bg-white/90 border border-gray-200/80 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.07)] px-3 py-2">
-          <nav className="flex items-center gap-1">
-            {menuItems.map((item) => (
-              <motion.a
-                key={item.label}
-                href={item.href}
-                className={cn(
-                  "flex flex-col items-center justify-center py-2 px-2 rounded-xl transition-all duration-300 ease-in-out",
-                  "hover:bg-gray-50/80 cursor-pointer min-w-[60px]",
-                  active === item.id
-                    ? "text-primary bg-primary/5"
-                    : "text-gray-600"
-                )}
-                whileHover={{ y: -2 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => handleMenuClick(e, item.href, item.id)}
-              >
-                <motion.div
-                  animate={{
-                    scale: active === item.id ? 1.1 : 1,
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <item.icon
-                    className={cn(
-                      "h-[18px] w-[18px] sm:h-5 sm:w-5 mb-0.5 sm:mb-1 transition-all duration-300",
-                      active === item.id
-                        ? "stroke-rose-500 stroke-[2.5px]"
-                        : "stroke-gray-600 stroke-2"
-                    )}
-                  />
-                </motion.div>
-                <motion.span
-                  className={cn(
-                    "text-[10px] sm:text-xs font-medium transition-all duration-300 line-clamp-1",
-                    active === item.id
-                      ? "text-rose-500 font-semibold"
-                      : "text-gray-600"
-                  )}
-                  animate={{
-                    scale: active === item.id ? 1.05 : 1,
-                  }}
-                  transition={{ duration: 0.2 }}
-                >
-                  {item.label}
-                </motion.span>
-              </motion.a>
-            ))}
-          </nav>
-        </div>
-      </motion.div>
-    </div>
+    <nav
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-sand-200 shadow-[0_-2px_10px_rgba(0,0,0,0.06)] md:bottom-4 md:left-1/2 md:right-auto md:w-auto md:max-w-[400px] md:-translate-x-1/2 md:rounded-2xl md:border md:border-sand-200/80 md:shadow-soft md:mx-4"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      role="navigation"
+      aria-label="Main navigation"
+    >
+      <div className="flex items-stretch justify-around md:justify-center md:gap-0 h-14 md:h-auto md:py-2.5 md:px-2">
+        {menuItems.map((item) => (
+          <motion.a
+            key={item.label}
+            href={item.href}
+            className={cn(
+              "flex flex-col items-center justify-center flex-1 min-w-0 min-h-[44px] md:min-w-[64px] md:min-h-[52px] rounded-lg md:rounded-xl transition-colors duration-200 active:bg-sand-100/80",
+              active === item.id
+                ? "text-sage-600 bg-sage-100/80"
+                : "text-stone-500"
+            )}
+            whileTap={{ scale: 0.96 }}
+            onClick={(e) => handleMenuClick(e, item.href, item.id)}
+          >
+            <item.icon
+              className={cn(
+                "w-6 h-6 md:w-5 md:h-5 shrink-0 mb-0.5 transition-all duration-200",
+                active === item.id
+                  ? "stroke-sage-600 stroke-[2.5px]"
+                  : "stroke-stone-400 stroke-2"
+              )}
+            />
+            <span
+              className={cn(
+                "text-[11px] md:text-xs font-medium line-clamp-1",
+                active === item.id ? "text-sage-600" : "text-stone-500"
+              )}
+            >
+              {item.label}
+            </span>
+          </motion.a>
+        ))}
+      </div>
+    </nav>
   );
 };
 

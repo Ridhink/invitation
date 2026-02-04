@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { fetchInvitation } from "@/services/api";
+import { useLocation } from "react-router-dom";
+import staticConfig from "@/config/config";
 import {
   getWeddingUid,
   storeWeddingUid,
@@ -36,7 +35,6 @@ const InvitationContext = createContext(null);
 // eslint-disable-next-line react/prop-types
 export function InvitationProvider({ children }) {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const invitationUid = useMemo(() => {
     // 1. First, check localStorage for existing UID
@@ -106,28 +104,19 @@ export function InvitationProvider({ children }) {
         window.history.replaceState({}, "", "/");
       }
     }
-  }, [location.pathname, location.search, navigate]);
+  }, [location.pathname, location.search]);
 
-  const {
-    data: config,
-    isLoading,
-    error,
-  } = useQuery({
-    queryKey: ["invitation", invitationUid],
-    queryFn: async () => {
-      const response = await fetchInvitation(invitationUid);
-      if (response.success) {
-        return response.data;
-      }
-      throw new Error("Failed to load invitation");
-    },
-    enabled: !!invitationUid,
-    staleTime: 10 * 60 * 1000, // 10 minutes
-  });
+  // Static site: config always from static config (no API)
+  const config = staticConfig.data;
 
   return (
     <InvitationContext.Provider
-      value={{ uid: invitationUid, config, isLoading, error: error?.message }}
+      value={{
+        uid: invitationUid,
+        config,
+        isLoading: false,
+        error: null,
+      }}
     >
       {children}
     </InvitationContext.Provider>

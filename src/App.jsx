@@ -54,10 +54,10 @@ function App() {
   // Show loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-pink-50">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-sand-100 to-sand-50">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Memuat undangan...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-sand-200 border-t-terracotta-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading invitation...</p>
         </div>
       </div>
     );
@@ -66,15 +66,15 @@ function App() {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-pink-50">
+      <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-sand-100 to-sand-50">
         <div className="text-center max-w-md mx-auto p-6">
-          <div className="text-rose-500 text-6xl mb-4">⚠️</div>
+          <div className="text-terracotta-500 text-6xl mb-4">⚠️</div>
           <h1 className="text-2xl font-serif text-gray-800 mb-2">
-            Undangan Tidak Ditemukan
+            Invitation Not Found
           </h1>
           <p className="text-gray-600 mb-4">{error}</p>
           <p className="text-sm text-gray-500">
-            Silakan periksa URL Anda atau hubungi penyelenggara.
+            Please check your URL or contact the hosts.
           </p>
         </div>
       </div>
@@ -123,10 +123,10 @@ function App() {
 
       <Suspense
         fallback={
-          <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-rose-50 to-pink-50">
+          <div className="min-h-[100dvh] flex items-center justify-center bg-gradient-to-br from-sand-100 to-sand-50">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto mb-4"></div>
-              <p className="text-gray-600">Memuat...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-2 border-sand-200 border-t-terracotta-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading...</p>
             </div>
           </div>
         }

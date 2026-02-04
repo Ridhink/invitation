@@ -9,65 +9,60 @@ export default function Events() {
     return (
         <>
             {/* Event Section */}
-            <section id="event" className="min-h-screen relative overflow-hidden">
+            <section id="event" className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-b from-lavender-100/40 via-white to-sand-50/50 py-12 sm:py-20">
                 <motion.div
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="relative z-10 container mx-auto px-4 py-20"
+                    transition={{ duration: 0.5 }}
+                    className="relative z-10 container mx-auto px-4"
                 >
                     {/* Section Header */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
+                        initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
+                        transition={{ duration: 0.6 }}
                         className="text-center space-y-4 mb-16"
                     >
                         <motion.span
-                            initial={{ opacity: 0, y: 10 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.2 }}
-                            className="inline-block text-rose-500 font-medium mb-2"
+                            className="inline-block text-lavender-500 text-xs font-medium tracking-[0.2em] uppercase"
                         >
-                            Catat Tanggal Penting Ini
+                            Save the Date
                         </motion.span>
 
                         <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 12 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.3 }}
-                            className="text-4xl md:text-5xl font-serif text-gray-800 leading-tight"
+                            transition={{ delay: 0.1 }}
+                            className="text-4xl md:text-5xl font-serif font-medium text-stone-800 leading-tight tracking-tight"
                         >
-                            Rangkaian Acara Pernikahan
+                            Wedding Events
                         </motion.h2>
 
                         <motion.p
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.4 }}
-                            className="text-gray-500 max-w-md mx-auto"
+                            transition={{ delay: 0.2 }}
+                            className="text-stone-500 max-w-md mx-auto text-sm leading-relaxed"
                         >
-                            Kami Mengundang Anda untuk Merayakan Hari Istimewa Sebagai Awal Perjalanan Cinta Kami
+                            We invite you to celebrate our special day as the beginning of our journey together
                         </motion.p>
 
-                        {/* Decorative Line */}
                         <motion.div
                             initial={{ scale: 0 }}
                             whileInView={{ scale: 1 }}
                             viewport={{ once: true }}
-                            transition={{ delay: 0.5 }}
                             className="flex items-center justify-center gap-4 mt-6"
                         >
-                            <div className="h-[1px] w-12 bg-rose-200" />
-                            <div className="text-rose-400">
-                                <Heart className="w-4 h-4" fill="currentColor" />
-                            </div>
-                            <div className="h-[1px] w-12 bg-rose-200" />
+                            <div className="h-px w-12 bg-lavender-300/60" />
+                            <Heart className="w-4 h-4 text-terracotta-400" fill="currentColor" />
+                            <div className="h-px w-12 bg-amber-200/60" />
                         </motion.div>
                     </motion.div>
 

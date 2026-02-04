@@ -4,6 +4,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    base: '/invitation/',
     plugins: [react()],
     resolve: {
         alias: {
@@ -26,7 +27,6 @@ export default defineConfig({
                     // Separate vendor chunks
                     'react-vendor': ['react', 'react-dom', 'react-router-dom'],
                     'animation-vendor': ['framer-motion'],
-                    'query-vendor': ['@tanstack/react-query'],
                     'ui-vendor': ['lucide-react', 'react-confetti'],
                 },
             },
@@ -45,7 +45,6 @@ export default defineConfig({
             'react-dom',
             'react-router-dom',
             'framer-motion',
-            '@tanstack/react-query',
         ],
     },
 });

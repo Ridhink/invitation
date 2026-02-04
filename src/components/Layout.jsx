@@ -90,7 +90,7 @@ const Layout = ({ children }) => {
     const handlePlay = () => {
       setIsPlaying(true);
       setShowToast(true);
-      setTimeout(() => setShowToast(false), config.audio.toastDuration);
+      setTimeout(() => setShowToast(false), config.audio?.toastDuration ?? 3000);
     };
 
     const handlePause = () => {
@@ -150,33 +150,34 @@ const Layout = ({ children }) => {
   }, []);
 
   return (
-    <div className="relative min-h-screen w-full bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+    <div className="relative min-h-[100dvh] w-full bg-sand-50 md:bg-gradient-to-br md:from-sand-100 md:via-lavender-50/50 md:to-amber-50/50 flex md:items-center md:justify-center md:py-6 md:px-2">
       <motion.div
-        className="mx-auto w-full max-w-[430px] min-h-screen bg-white relative overflow-hidden border border-gray-200 shadow-lg"
+        className="w-full max-w-[430px] min-h-[100dvh] md:min-h-[calc(100dvh-3rem)] bg-white relative overflow-hidden md:rounded-[2rem] md:shadow-elegant md:ring-1 md:ring-black/5 mx-auto"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3 }}
       >
-        {/* Music Control Button with Status Indicator */}
+        {/* Music - app-style top-right icon with safe area */}
         <motion.button
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          whileHover={{ scale: 1.1 }}
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
           whileTap={{ scale: 0.9 }}
           onClick={toggleMusic}
-          className="fixed top-4 right-4 z-50 bg-white/80 backdrop-blur-sm p-3 rounded-full shadow-lg border border-rose-100/50"
+          className="fixed top-[max(0.75rem,env(safe-area-inset-top))] right-[max(1rem,env(safe-area-inset-right))] z-50 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full bg-white shadow-md border border-sand-200 active:bg-sand-100 md:bg-white/90 md:backdrop-blur-md"
+          aria-label={isPlaying ? 'Pause music' : 'Play music'}
         >
           {isPlaying ? (
-            <div className="relative">
-              <PauseCircle className="w-6 h-6 text-rose-500" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 bg-green-500 rounded-full animate-pulse" />
+            <div className="relative flex items-center justify-center">
+              <PauseCircle className="w-6 h-6 text-sage-600" strokeWidth={2} />
+              <span className="absolute -top-0.5 -right-0.5 w-2 h-2 bg-emerald-400 rounded-full animate-pulse ring-2 ring-white" />
             </div>
           ) : (
-            <PlayCircle className="w-6 h-6 text-rose-500" />
+            <PlayCircle className="w-6 h-6 text-sage-500" strokeWidth={2} />
           )}
         </motion.button>
 
-        <main className="relative h-full w-full pb-[100px]">
+        <main className="relative w-full min-h-[100dvh]" style={{ paddingBottom: 'calc(4.5rem + env(safe-area-inset-bottom))' }}>
           {children}
         </main>
         <BottomBar />
@@ -184,17 +185,16 @@ const Layout = ({ children }) => {
         <AnimatePresence>
           {showToast && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
+              exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.3 }}
-              className="fixed bottom-24 left-1/2 transform -translate-x-1/2 z-50"
+              className="fixed left-4 right-4 md:left-1/2 md:right-auto md:-translate-x-1/2 z-50 md:w-auto"
+              style={{ bottom: 'max(5.5rem, calc(5.5rem + env(safe-area-inset-bottom)))' }}
             >
-              <div className="bg-black/80 text-white transform -translate-x-1/2 px-4 py-2 rounded-full backdrop-blur-sm flex items-center space-x-2">
-                <Music className="w-4 h-4 animate-pulse" />
-                <span className="text-sm whitespace-nowrap">
-                  {config.audio?.title || 'Background Music'}
-                </span>
+              <div className="bg-stone-800/95 text-sand-50 md:-translate-x-1/2 px-4 py-3 rounded-2xl md:rounded-full backdrop-blur-md flex items-center justify-center gap-2 shadow-lg text-sm font-medium">
+                <Music className="w-4 h-4 text-amber-300 shrink-0" />
+                <span className="whitespace-nowrap">{config.audio?.title || 'Background Music'}</span>
               </div>
             </motion.div>
           )}

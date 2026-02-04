@@ -1,18 +1,18 @@
 const config = {
   data: {
     // Main invitation title that appears on the page
-    title: "Pernikahan Fulan & Fulana",
+    title: "The Wedding of Hridhin & Afreen",
     // Opening message/description of the invitation
     description:
-      "Kami akan menikah dan mengundang Anda untuk turut merayakan momen istimewa ini.", // Nanti ini dibikin random
+      "We are getting married and invite you to celebrate this special moment with us.",
     // Groom's name
-    groomName: "Fulan",
+    groomName: "Hridhin",
     // Bride's name
-    brideName: "Fulana",
+    brideName: "Afreen",
     // Groom's parents names
-    parentGroom: "Bapak Groom & Ibu Groom",
+    parentGroom: "Mr. Groom & Mrs. Groom",
     // Bride's parents names
-    parentBride: "Bapak Bride & Ibu Bride",
+    parentBride: "Mr. Bride & Mrs. Bride",
     // Wedding date (format: YYYY-MM-DD)
     date: "2024-12-24",
     // Google Maps link for location (short clickable link)
@@ -26,7 +26,7 @@ const config = {
     // Venue/building name
     location: "Grand Ballroom, Hotel Majesty",
     // Full address of the wedding venue
-    address: "Jl. Jend. Sudirman No.1, Jakarta",
+    address: "123 Main Street, City",
     // Image that appears when link is shared on social media
     ogImage: "/images/og-image.jpg",
     // Icon that appears in browser tab
@@ -34,29 +34,13 @@ const config = {
     // List of event agenda/schedule
     agenda: [
       {
-        // First event name
-        title: "Akad Nikah",
-        // Event date (format: YYYY-MM-DD)
+        title: "Reception",
         date: "2024-12-24",
-        // Start time (format: HH:MM)
         startTime: "16:16",
-        // End time (format: HH:MM)
         endTime: "17:30",
-        // Event venue
         location: "Grand Ballroom, Hotel Majesty",
-        // Full address
-        address: "Jl. Jend. Sudirman No.1, Jakarta",
+        address: "123 Main Street, City",
       },
-      {
-        // Second event name
-        title: "Resepsi Nikah",
-        date: "2024-12-24",
-        startTime: "16:16",
-        endTime: "17:30",
-        location: "Grand Ballroom, Hotel Majesty",
-        address: "Jl. Jend. Sudirman No.1, Jakarta",
-      }
-      // You can add more agenda items with the same format
     ],
 
     // Background music settings
@@ -71,23 +55,8 @@ const config = {
       loop: true
     },
 
-    // List of bank accounts for digital envelope/gifts
-    banks: [
-      {
-        // Bank name
-        bank: "Bank Central Asia",
-        // Account number
-        accountNumber: "1234567890",
-        // Account holder name (all uppercase)
-        accountName: "FULAN",
-      },
-      {
-        bank: "Bank Mandiri",
-        accountNumber: "0987654321",
-        accountName: "FULANA",
-      }
-      // You can add more banks with the same format
-    ]
+    // No gifts - leave banks empty
+    banks: [],
   }
 };
 

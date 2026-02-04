@@ -9,6 +9,25 @@
   overflow: hidden;
 }
 
+/* Animated gradient backgrounds (classy, colorful) */
+@layer utilities {
+  .bg-gradient-mesh {
+    background: linear-gradient(135deg, #F2F6EF 0%, #FAF8F5 25%, #F5EBE3 50%, #EDE8F2 75%, #FDF3E3 100%);
+    background-size: 400% 400%;
+    animation: gradient-mesh 12s ease infinite;
+  }
+  .bg-gradient-radial-soft {
+    background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(184, 201, 168, 0.25), transparent 50%),
+                radial-gradient(ellipse 60% 40% at 100% 100%, rgba(232, 212, 196, 0.3), transparent 50%),
+                radial-gradient(ellipse 50% 30% at 0% 80%, rgba(196, 181, 216, 0.2), transparent 50%);
+  }
+}
+
+@keyframes gradient-mesh {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -68,7 +87,22 @@
   * {
     @apply border-border;
   }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-sand-50 text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    min-height: 100dvh;
+    overflow-x: hidden;
+  }
+  /* Touch-friendly: minimum 44px tap targets */
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+  h1, h2, h3, .font-serif {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: 0.02em;
   }
 }

@@ -1,4 +1,4 @@
-# Sakeenah: Modern Islamic Wedding Invitation Platform
+# Sakeenah: Modern Wedding Invitation Platform
 
 ![Build](https://img.shields.io/badge/build-passing-brightgreen)
 ![License](https://img.shields.io/badge/license-Apache%202.0-blue)
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Sakeenah is a production-ready, database-driven wedding invitation platform designed for modern couples who value both aesthetics and functionality. Built on a scalable client-server architecture with PostgreSQL multi-tenancy, it enables hosting unlimited wedding invitations from a single deployment with personalized guest experiences.
+Sakeenah is a production-ready wedding invitation platform designed for modern couples who value both aesthetics and functionality. It runs as a **static website**: edit `src/config/config.js` for your wedding details, then build and deploy the `dist/` folder to any static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages, etc.). No server or database required. Wishes are stored locally in the guest’s browser.
 
 ![Sakeenah Preview](public/preview.png)
 
