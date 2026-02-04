@@ -9,7 +9,6 @@
   overflow: hidden;
 }
 
-/* Animated gradient backgrounds (classy, colorful) */
 @layer utilities {
   .bg-gradient-mesh {
     background: linear-gradient(135deg, #F2F6EF 0%, #FAF8F5 25%, #F5EBE3 50%, #EDE8F2 75%, #FDF3E3 100%);
@@ -97,7 +96,6 @@
     min-height: 100dvh;
     overflow-x: hidden;
   }
-  /* Touch-friendly: minimum 44px tap targets */
   button, a, [role="button"] {
     touch-action: manipulation;
   }

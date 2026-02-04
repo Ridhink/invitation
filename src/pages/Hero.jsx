@@ -6,11 +6,10 @@ import { formatEventDate } from "@/lib/formatEventDate";
 import { getGuestName } from "@/lib/invitationStorage";
 
 export default function Hero() {
-  const config = useConfig(); // Use hook to get config from API or fallback to static
+  const config = useConfig();
   const [guestName, setGuestName] = useState("");
 
   useEffect(() => {
-    // Get guest name from localStorage
     const storedGuestName = getGuestName();
     if (storedGuestName) {
       setGuestName(storedGuestName);
@@ -146,7 +145,6 @@ export default function Hero() {
             </motion.h2>
           </div>
 
-          {/* Guest card */}
           <motion.div
             initial={{ y: 16, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}

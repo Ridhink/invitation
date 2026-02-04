@@ -4,11 +4,10 @@ import { motion } from 'framer-motion'
 import { Heart } from 'lucide-react'
 
 export default function Events() {
-    const config = useConfig(); // Use hook to get config from API or fallback to static
+    const config = useConfig();
 
     return (
         <>
-            {/* Event Section */}
             <section id="event" className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-b from-lavender-100/40 via-white to-sand-50/50 py-12 sm:py-20">
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -17,7 +16,6 @@ export default function Events() {
                     transition={{ duration: 0.5 }}
                     className="relative z-10 container mx-auto px-4"
                 >
-                    {/* Section Header */}
                     <motion.div
                         initial={{ opacity: 0, y: 16 }}
                         whileInView={{ opacity: 1, y: 0 }}
@@ -66,7 +64,6 @@ export default function Events() {
                         </motion.div>
                     </motion.div>
 
-                    {/* Events Grid */}
                     <motion.div
                         initial={{ opacity: 0, y: 40 }}
                         whileInView={{ opacity: 1, y: 0 }}

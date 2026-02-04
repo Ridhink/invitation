@@ -1,8 +1,3 @@
-/**
- * Secure localStorage utility for wedding invitation data
- * Stores wedding UID and guest information securely
- */
-
 const STORAGE_KEYS = {
   WEDDING_UID: "sakeenah_wedding_uid",
   GUEST_NAME: "sakeenah_guest_name",
@@ -10,12 +5,8 @@ const STORAGE_KEYS = {
   TIMESTAMP: "sakeenah_timestamp",
 };
 
-// Storage expiration: 30 days
 const STORAGE_EXPIRY = 30 * 24 * 60 * 60 * 1000;
 
-/**
- * Check if stored data has expired
- */
 function isExpired() {
   const timestamp = localStorage.getItem(STORAGE_KEYS.TIMESTAMP);
   if (!timestamp) return true;
@@ -24,19 +15,12 @@ function isExpired() {
   return age > STORAGE_EXPIRY;
 }
 
-/**
- * Clear all wedding invitation data from localStorage
- */
 export function clearInvitationData() {
   Object.values(STORAGE_KEYS).forEach((key) => {
     localStorage.removeItem(key);
   });
 }
 
-/**
- * Store wedding UID in localStorage
- * @param {string} uid - Wedding unique identifier
- */
 export function storeWeddingUid(uid) {
   if (!uid) return;
 
@@ -48,10 +32,6 @@ export function storeWeddingUid(uid) {
   }
 }
 
-/**
- * Get wedding UID from localStorage
- * @returns {string|null} Wedding UID or null if not found/expired
- */
 export function getWeddingUid() {
   if (isExpired()) {
     clearInvitationData();
@@ -66,10 +46,6 @@ export function getWeddingUid() {
   }
 }
 
-/**
- * Store guest name in localStorage
- * @param {string} name - Guest name (already decoded)
- */
 export function storeGuestName(name) {
   if (!name) return;
 
@@ -81,10 +57,6 @@ export function storeGuestName(name) {
   }
 }
 
-/**
- * Get guest name from localStorage
- * @returns {string|null} Guest name or null if not found/expired
- */
 export function getGuestName() {
   if (isExpired()) {
     clearInvitationData();
@@ -99,18 +71,10 @@ export function getGuestName() {
   }
 }
 
-/**
- * Check if invitation data exists in localStorage
- * @returns {boolean}
- */
 export function hasInvitationData() {
   return !isExpired() && !!getWeddingUid();
 }
 
-/**
- * Get all stored invitation data
- * @returns {Object} Object containing uid and guestName
- */
 export function getInvitationData() {
   if (isExpired()) {
     clearInvitationData();
@@ -123,12 +87,6 @@ export function getInvitationData() {
   };
 }
 
-/**
- * Store complete invitation data
- * @param {Object} data - Invitation data
- * @param {string} data.uid - Wedding UID
- * @param {string} data.guestName - Guest name
- */
 export function storeInvitationData({ uid, guestName }) {
   storeWeddingUid(uid);
   if (guestName) {

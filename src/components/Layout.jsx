@@ -5,19 +5,16 @@ import { useConfig } from '@/hooks/useConfig';
 import BottomBar from '@/components/BottomBar';
 
 const Layout = ({ children }) => {
-  const config = useConfig(); // Use hook to get config from API or fallback to static
+  const config = useConfig();
   const [isPlaying, setIsPlaying] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const audioRef = useRef(null);
   const wasPlayingRef = useRef(false);
 
-  // First useEffect to handle initial setup and auto-play attempt
   useEffect(() => {
-    // Create audio element
     audioRef.current = new Audio(config.audio?.src || '/audio/fulfilling-humming.mp3');
     audioRef.current.loop = config.audio?.loop !== false;
 
-    // Try to autoplay
     const attemptAutoplay = async () => {
       try {
         await audioRef.current.play();
@@ -27,7 +24,6 @@ const Layout = ({ children }) => {
         setTimeout(() => setShowToast(false), 3000);
       } catch (error) {
         console.log('Autoplay failed, waiting for user interaction');
-        // Add click event listener for first interaction
         const handleFirstInteraction = async () => {
           try {
             await audioRef.current.play();
@@ -54,7 +50,6 @@ const Layout = ({ children }) => {
     };
   }, []);
 
-  // Second useEffect to handle visibility and focus changes
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -86,7 +81,6 @@ const Layout = ({ children }) => {
       }
     };
 
-    // Audio event listeners
     const handlePlay = () => {
       setIsPlaying(true);
       setShowToast(true);
@@ -119,7 +113,6 @@ const Layout = ({ children }) => {
     };
   }, [isPlaying]);
 
-  // Toggle music function
   const toggleMusic = async () => {
     if (audioRef.current) {
       try {
@@ -136,7 +129,6 @@ const Layout = ({ children }) => {
     }
   };
 
-  // Handle page unload
   useEffect(() => {
     const handleBeforeUnload = () => {
       if (audioRef.current) {
@@ -157,7 +149,6 @@ const Layout = ({ children }) => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.3 }}
       >
-        {/* Music - app-style top-right icon with safe area */}
         <motion.button
           initial={{ scale: 0, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -181,7 +172,6 @@ const Layout = ({ children }) => {
           {children}
         </main>
         <BottomBar />
-        {/* Music Info Toast */}
         <AnimatePresence>
           {showToast && (
             <motion.div

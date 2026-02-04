@@ -1,11 +1,10 @@
-// src/pages/LandingPage.jsx
 import { useConfig } from '@/hooks/useConfig';
 import { formatEventDate } from '@/lib/formatEventDate';
 import { motion } from 'framer-motion';
 import { Calendar, Clock } from 'lucide-react';
 
 const LandingPage = ({ onOpenInvitation }) => {
-  const config = useConfig(); // Use hook to get config from API or fallback to static
+  const config = useConfig();
 
   return (
   <motion.div
@@ -15,7 +14,6 @@ const LandingPage = ({ onOpenInvitation }) => {
     transition={{ duration: 0.6 }}
     className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-br from-sage-50 via-sand-50 to-lavender-50"
   >
-    {/* Animated gradient orbs */}
     <div className="absolute inset-0 bg-gradient-radial-soft" />
     <motion.div
       animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.7, 0.4] }}
@@ -45,10 +43,8 @@ const LandingPage = ({ onOpenInvitation }) => {
         transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
         className="w-full max-w-md"
       >
-        {/* Card with gradient border effect */}
         <div className="relative rounded-2xl sm:rounded-3xl p-[2px] bg-gradient-to-br from-sage-300 via-amber-200 to-lavender-300 shadow-lg sm:shadow-elegant">
           <div className="relative overflow-hidden rounded-2xl sm:rounded-[22px] bg-white/95 backdrop-blur-sm p-6 sm:p-10">
-            {/* Top ornament - animated dots */}
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
@@ -74,7 +70,6 @@ const LandingPage = ({ onOpenInvitation }) => {
               <div className="h-px flex-1 max-w-[4rem] bg-gradient-to-l from-transparent to-terracotta-400/70" />
             </motion.div>
 
-            {/* Date & time pills - staggered */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
@@ -104,7 +99,6 @@ const LandingPage = ({ onOpenInvitation }) => {
               </motion.div>
             </motion.div>
 
-            {/* Names with gradient text accent */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -124,7 +118,6 @@ const LandingPage = ({ onOpenInvitation }) => {
               />
             </motion.div>
 
-            {/* CTA - gradient button with shine */}
             <motion.div
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}

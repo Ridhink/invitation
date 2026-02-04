@@ -1,5 +1,4 @@
-// src/components/bottom-bar/BottomBar.jsx
-import React, { useEffect, useCallback, useMemo } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import {
   Home,
@@ -16,35 +15,15 @@ const baseMenuItems = [
   { icon: MessageCircleHeart, label: 'Wishes', href: '#wishes', id: 'wishes' },
 ];
 
-/**
- * BottomBar is a React functional component that renders a fixed bottom navigation bar
- * with automatic section detection based on scroll position.
- *
- * This component uses Framer Motion to animate its entrance and the Intersection Observer API
- * to automatically detect which section is currently in view. It provides smooth transitions
- * for opacity and vertical movement, and highlights the active section based on scroll position.
- * The component also supports manual navigation by clicking on menu items.
- *
- * @component
- * @example
- * // Basic usage:
- * <BottomBar />
- *
- * @returns {JSX.Element} A JSX element containing the animated bottom navigation bar with auto-detection.
- */
 const BottomBar = () => {
   const [active, setActive] = React.useState('home');
   const menuItems = baseMenuItems;
 
-  // Function to handle smooth scrolling when clicking menu items
   const handleMenuClick = useCallback((e, href, id) => {
     e.preventDefault();
     const element = document.querySelector(href);
     if (element) {
-      // Temporarily set active state for immediate feedback
       setActive(id);
-
-      // Smooth scroll to element
       element.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
@@ -52,11 +31,10 @@ const BottomBar = () => {
     }
   }, []);
 
-  // Set up Intersection Observer for automatic section detection
   useEffect(() => {
     const observerOptions = {
-      root: null, // Use viewport as root
-      rootMargin: '-20% 0px -80% 0px', // Trigger when section is 20% visible from top
+      root: null,
+      rootMargin: '-20% 0px -80% 0px',
       threshold: 0
     };
 
@@ -64,8 +42,6 @@ const BottomBar = () => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           const sectionId = entry.target.id;
-
-          // Only update if it's a valid menu section
           const validSection = menuItems.find(item => item.id === sectionId);
           if (validSection) {
             setActive(sectionId);
@@ -76,7 +52,6 @@ const BottomBar = () => {
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    // Observe all sections that correspond to menu items
     menuItems.forEach((item) => {
       const element = document.getElementById(item.id);
       if (element) {
@@ -84,7 +59,6 @@ const BottomBar = () => {
       }
     });
 
-    // Cleanup observer on component unmount
     return () => {
       observer.disconnect();
     };

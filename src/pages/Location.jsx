@@ -1,13 +1,12 @@
 import { useConfig } from "@/hooks/useConfig";
-import { Clock, Navigation as NavigationIcon, MapPin, CalendarCheck, Phone, ExternalLink } from 'lucide-react'
+import { Clock, MapPin, CalendarCheck, ExternalLink } from 'lucide-react'
 import { motion } from 'framer-motion';
 import { formatEventDate } from "@/lib/formatEventDate";
 
 export default function Location() {
-  const config = useConfig(); // Use hook to get config from API or fallback to static
+  const config = useConfig();
 
   return (<>
-    {/* Location section */}
     <section id="location" className="min-h-[100dvh] relative overflow-hidden bg-gradient-to-b from-white via-amber-50/30 to-sand-50/50 py-12 sm:py-20">
       <div className="container mx-auto px-4 relative z-10">
         <motion.div
@@ -30,9 +29,7 @@ export default function Location() {
           </div>
         </motion.div>
 
-        {/* Location Content */}
         <div className="max-w-6xl mx-auto grid md:grid-row-2 gap-8 items-center">
-          {/* Map Container */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -52,7 +49,6 @@ export default function Location() {
             ></iframe>
           </motion.div>
 
-          {/* Venue Details */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -79,7 +75,6 @@ export default function Location() {
                   <p className="text-gray-600">{config.time}</p>
                 </div>
 
-                {/* Action Button - Full Width */}
                 <div className="pt-4">
                   <motion.a
                     href={config.maps_url}

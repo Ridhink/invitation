@@ -45,12 +45,10 @@ export default function Wishes() {
   const [isOpen, setIsOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Load wishes from localStorage
   useEffect(() => {
     setWishes(getWishesFromStorage());
   }, []);
 
-  // Get guest name from localStorage
   useEffect(() => {
     const storedGuestName = getGuestName();
     if (storedGuestName) {
@@ -124,7 +122,6 @@ export default function Wishes() {
             </div>
           </motion.div>
 
-          {/* Wishes List */}
           <div className="max-w-2xl mx-auto space-y-6">
             {(!wishes || wishes.length === 0) && (
               <div className="text-center py-12">
@@ -154,21 +151,16 @@ export default function Wishes() {
                       transition={{ delay: index * 0.1 }}
                       className="group relative w-[300px] h-[160px] flex-shrink-0"
                     >
-                      {/* Background gradient */}
                       <div className="absolute inset-0 bg-gradient-to-br from-sand-100/80 to-white rounded-2xl transform transition-transform group-hover:scale-[1.02] duration-300" />
 
-                      {/* Card content */}
                       <div className="relative h-full backdrop-blur-sm bg-white/95 p-4 rounded-2xl border border-sand-200/60 shadow-soft flex flex-col">
-                        {/* Header */}
                         <div className="flex items-center space-x-3 mb-3">
-                          {/* Avatar */}
                           <div className="flex-shrink-0">
                             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sage-400 to-sage-600 flex items-center justify-center text-white text-sm font-semibold shadow-soft">
                               {wish.name[0].toUpperCase()}
                             </div>
                           </div>
 
-                          {/* Name, Time, and Attendance */}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                               <h4 className="font-semibold text-gray-800 text-sm truncate max-w-[140px]">
@@ -188,7 +180,6 @@ export default function Wishes() {
                             </div>
                           </div>
 
-                          {/* New badge */}
                           {Date.now() - new Date(wish.created_at).getTime() <
                             3600000 && (
                             <span className="flex-shrink-0 px-2 py-0.5 rounded-full bg-sage-400/15 text-sage-600 text-xs font-medium">
@@ -197,7 +188,6 @@ export default function Wishes() {
                           )}
                         </div>
 
-                        {/* Message */}
                         <div className="flex-1 overflow-hidden">
                           <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
                             {wish.message}
@@ -210,7 +200,6 @@ export default function Wishes() {
               </AnimatePresence>
             )}
           </div>
-          {/* Wishes Form */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -220,7 +209,6 @@ export default function Wishes() {
             <form onSubmit={handleSubmitWish} className="relative">
               <div className="bg-white p-4 sm:p-6 rounded-2xl border border-sand-200 shadow-sm">
                 <div className="space-y-2">
-                  {/* Name Input - Pre-filled from URL or editable */}
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2 text-gray-500 text-sm mb-1">
                       <User className="w-4 h-4" />
@@ -251,7 +239,6 @@ export default function Wishes() {
                       <span>Will you be attending?</span>
                     </div>
 
-                    {/* Custom Select Button */}
                     <button
                       type="button"
                       onClick={() => setIsOpen(!isOpen)}
@@ -274,7 +261,6 @@ export default function Wishes() {
                       />
                     </button>
 
-                    {/* Dropdown Options */}
                     <AnimatePresence>
                       {isOpen && (
                         <motion.div
@@ -308,7 +294,6 @@ export default function Wishes() {
                       )}
                     </AnimatePresence>
                   </motion.div>
-                  {/* Wish Textarea */}
                   <div className="space-y-2">
                     <div className="flex items-center space-x-2 text-gray-500 text-sm mb-1">
                       <MessageCircle className="w-4 h-4" />
