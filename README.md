@@ -176,9 +176,21 @@ Replace `your-wedding-uid` with the UID you defined in your SQL file.
 
 ## Personalized Invitations
 
-### URL Pattern
+### Enhanced Security & Privacy
 
-Each guest receives a unique invitation link with their name encoded for personalization:
+Sakeenah implements a secure invitation system that protects guest privacy and prevents web scraping:
+
+**Security Features:**
+
+- Wedding UID and guest names stored in localStorage (not visible in URL after initial load)
+- URL automatically cleaned to `https://yourdomain.com` after data extraction
+- 30-day expiration for stored invitation data
+- Meta tags prevent Wayback Machine and search engine archiving
+- No URL injection vulnerabilities
+
+### Initial URL Pattern
+
+Each guest receives a unique invitation link that contains their wedding UID and encoded name:
 
 ```
 https://yourdomain.com/<wedding-uid>?guest=<base64-encoded-name>
@@ -190,13 +202,47 @@ https://yourdomain.com/<wedding-uid>?guest=<base64-encoded-name>
 - `?guest=`: Query parameter for guest identification
 - `<base64-encoded-name>`: Guest name encoded in URL-safe base64 format
 
+**What Happens After First Click:**
+
+1. Guest clicks: `https://yourdomain.com/ahmad-fatimah-2025?guest=QWhtYWQ`
+2. System extracts and stores UID and guest name in localStorage
+3. URL automatically changes to: `https://yourdomain.com`
+4. All data persists in localStorage for 30 days
+5. Guest sees clean URL, data remains private
+
 **Real Examples:**
+
+Initial link sent to guest:
 
 ```
 https://yourdomain.com/ahmad-fatimah-2025?guest=QWhtYWQlMjBBYmR1bGxhaA
+```
+
+URL after guest opens (automatically cleaned):
+
+```
+https://yourdomain.com
+```
+
+https://yourdomain.com/<wedding-uid>?guest=<base64-encoded-name>
+
+```
+
+**Components:**
+
+- `<wedding-uid>`: Your unique wedding identifier (e.g., `rifqi-dina-2025`, `ahmad-fatimah-2025`)
+- `?guest=`: Query parameter for guest identification
+- `<base64-encoded-name>`: Guest name encoded in URL-safe base64 format
+
+**Real Examples:**
+
+```
+
+https://yourdomain.com/ahmad-fatimah-2025?guest=QWhtYWQlMjBBYmR1bGxhaA
 https://yourdomain.com/rifqi-dina-2025?guest=U2FyYWglMjBKb2huc29u
 https://yourdomain.com/wedding-2025?guest=QmFwYWslMjBSdWRpJTIwJTI2JTIwS2VsdWFyZ2E
-```
+
+````
 
 ### Generating Guest Links
 
@@ -204,7 +250,7 @@ Use the built-in script to generate personalized links for all your guests:
 
 ```bash
 bun run generate-links
-```
+````
 
 **Steps:**
 
@@ -242,11 +288,35 @@ bun run generate-links
 
 When guests open their personalized link:
 
+1. **First Visit:**
+
+   - Click link: `https://yourdomain.com/wedding-2025?guest=encoded-name`
+   - System stores wedding UID and guest name in browser localStorage
+   - URL automatically cleans to: `https://yourdomain.com`
+   - Invitation loads with personalized greeting
+
+2. **Subsequent Visits:**
+   - Guest navigates to: `https://yourdomain.com`
+   - Data loads from localStorage automatically
+   - No need to click the original link again
+   - Works for 30 days from first visit
+
+**Features:**
+
 - **Name pre-filled**: Guest name automatically appears in hero section
 - **Wish form ready**: Name pre-populated in wedding wish submission
 - **Editable**: Guests can update their name if needed
-- **Attendance tracking**: Individual RSVP tracked per link
+- **Attendance tracking**: Individual RSVP tracked per guest
 - **No login required**: Seamless experience without authentication
+- **Privacy protected**: Guest data stored locally, not in URL history
+- **Clean URLs**: No sensitive information visible in browser address bar
+
+**Data Persistence:**
+
+- Invitation data persists for 30 days in browser localStorage
+- Clearing browser data will require clicking the original link again
+- Each browser/device maintains separate invitation data
+- No server-side session management required
 
 ### Distribution Methods
 
@@ -460,22 +530,30 @@ bun run lint             # ESLint code validation
 
 ### Data Protection
 
-- Multi-tenant data isolation at database level
-- CORS configuration restricts API access to approved domains
-- Input validation via Zod schemas prevents injection attacks
-- HTTPS/TLS encryption for all production deployments
+- **Multi-tenant isolation**: Database-level separation ensures wedding data never crosses boundaries
+- **CORS protection**: API access restricted to approved domains only
+- **Input validation**: Zod schemas prevent SQL injection and XSS attacks
+- **TLS encryption**: HTTPS enforced for all production deployments
+- **localStorage security**: Client-side data expires after 30 days automatically
+- **URL sanitization**: Sensitive parameters removed from URL after extraction
+- **Anti-scraping**: Meta tags and robots.txt prevent web archiving (Wayback Machine, etc.)
 
-### Authentication
+### Authentication & Guest Privacy
 
-- Guest identification via URL-encoded parameters (no login required)
-- PostgreSQL row-level security for data isolation
-- API rate limiting recommended for production
+- **No login required**: Seamless guest experience via localStorage persistence
+- **Clean URLs**: Wedding UID and guest names hidden from URL after first load
+- **Session management**: Client-side storage with automatic expiration
+- **Database security**: PostgreSQL row-level security for data isolation
+- **Rate limiting**: Recommended for production to prevent abuse
 
-### Privacy
+### Privacy Guarantees
 
-- Guest names stored as reversible base64 (not PII encryption)
-- Wish submissions voluntary and publicly displayed
-- No third-party tracking or analytics by default
+- **Minimal data collection**: Only wedding UID and guest name stored client-side
+- **No tracking**: Zero third-party analytics or tracking by default
+- **Public wishes**: Guest messages intentionally public for wedding celebration
+- **Data retention**: localStorage cleared after 30 days or manual browser cleanup
+- **No URL history**: Sensitive data not persisted in browser history or bookmarks
+- **Archive prevention**: Robots.txt and meta tags block Wayback Machine and web crawlers
 
 ## Project Structure
 
