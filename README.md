@@ -176,24 +176,121 @@ Replace `your-wedding-uid` with the UID you defined in your SQL file.
 
 ## Personalized Invitations
 
-Generate unique invitation links for each guest:
+### URL Pattern
+
+Each guest receives a unique invitation link with their name encoded for personalization:
+
+```
+https://yourdomain.com/<wedding-uid>?guest=<base64-encoded-name>
+```
+
+**Components:**
+
+- `<wedding-uid>`: Your unique wedding identifier (e.g., `rifqi-dina-2025`, `ahmad-fatimah-2025`)
+- `?guest=`: Query parameter for guest identification
+- `<base64-encoded-name>`: Guest name encoded in URL-safe base64 format
+
+**Real Examples:**
+
+```
+https://yourdomain.com/ahmad-fatimah-2025?guest=QWhtYWQlMjBBYmR1bGxhaA
+https://yourdomain.com/rifqi-dina-2025?guest=U2FyYWglMjBKb2huc29u
+https://yourdomain.com/wedding-2025?guest=QmFwYWslMjBSdWRpJTIwJTI2JTIwS2VsdWFyZ2E
+```
+
+### Generating Guest Links
+
+Use the built-in script to generate personalized links for all your guests:
 
 ```bash
 bun run generate-links
 ```
 
-Output format:
+**Steps:**
 
-```
-https://yourdomain.com/wedding-2025?guest=QWhtYWQgQWJkdWxsYWg=
-```
+1. Edit `generate-links-example.js` and configure:
+
+   ```javascript
+   const INVITATION_UID = "your-wedding-uid"; // Your wedding UID
+   const BASE_URL = "https://yourdomain.com"; // Your production URL
+
+   const guestList = [
+     "Ahmad Abdullah",
+     "Sarah Johnson",
+     "Bapak Rudi & Keluarga",
+     // ... add all your guests
+   ];
+   ```
+
+2. Run the script:
+
+   ```bash
+   bun run generate-links
+   ```
+
+3. Output includes personalized links for each guest:
+
+   ```
+   1. Ahmad Abdullah
+      https://yourdomain.com/ahmad-fatimah-2025?guest=QWhtYWQlMjBBYmR1bGxhaA
+
+   2. Sarah Johnson
+      https://yourdomain.com/ahmad-fatimah-2025?guest=U2FyYWglMjBKb2huc29u
+   ```
+
+### Guest Experience
 
 When guests open their personalized link:
 
-- Name automatically appears in hero section
-- Wish form pre-filled with guest name
-- Guest can update name if needed
-- Attendance tracked per individual link
+- **Name pre-filled**: Guest name automatically appears in hero section
+- **Wish form ready**: Name pre-populated in wedding wish submission
+- **Editable**: Guests can update their name if needed
+- **Attendance tracking**: Individual RSVP tracked per link
+- **No login required**: Seamless experience without authentication
+
+### Distribution Methods
+
+**WhatsApp Template:**
+
+```
+Assalamualaikum Warahmatullahi Wabarakatuh,
+
+Dengan memohon rahmat dan ridho Allah SWT, kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri pernikahan kami:
+
+[Bride] & [Groom]
+[Date] | [Location]
+
+Buka undangan digital: [personalized-link]
+
+Jazakumullahu khairan
+```
+
+**SMS Template:**
+
+```
+[Bride] & [Groom] wedding invitation
+Date: [date]
+View your invitation: [short-link]
+```
+
+**Email Template:**
+
+```
+Subject: Wedding Invitation - [Bride] & [Groom]
+
+Dear [Guest Name],
+
+We joyfully invite you to celebrate our wedding...
+View your personalized invitation: [link]
+```
+
+### Link Management Tips
+
+- **Test links first**: Always test generated links before mass distribution
+- **URL shorteners**: Use bit.ly or similar for cleaner WhatsApp sharing
+- **Track opens**: Monitor invitation views through attendance statistics
+- **Backup list**: Keep a spreadsheet of guest names and their unique links
+- **Resend capability**: Guests can request link resend via contact information
 
 ## API Reference
 
