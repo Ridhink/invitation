@@ -7,6 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.0] - 2026-02-04
+
+### Added
+
+- localStorage utility for secure wedding UID and guest name storage with automatic 30-day expiration (bc8b4ee)
+- Automatic URL sanitization that cleans sensitive parameters after data extraction (bc8b4ee)
+- Comprehensive anti-scraping meta tags in App.jsx to prevent Wayback Machine and search engine archiving (bc8b4ee)
+- Enhanced robots.txt with specific directives to block web crawlers and archive bots (bc8b4ee)
+- Detailed security and privacy documentation in README.md explaining new URL behavior (bc8b4ee)
+- Data persistence mechanism that maintains invitation state across browser sessions for 30 days (bc8b4ee)
+
+### Changed
+
+- **BREAKING**: URLs now automatically clean to root path (/) after initial load, hiding wedding UID and guest parameters (bc8b4ee)
+- InvitationContext now prioritizes localStorage over URL parameters for data retrieval (bc8b4ee)
+- Hero page updated to retrieve guest names from localStorage instead of URL query parameters (bc8b4ee)
+- Wishes page updated to retrieve guest names from localStorage instead of URL query parameters (bc8b4ee)
+- README.md personalized invitations section completely rewritten with new security-focused workflow (bc8b4ee)
+- Security & Compliance section enhanced with localStorage security, URL sanitization, and anti-scraping details (bc8b4ee)
+
+### Security
+
+- Wedding UIDs and guest names now hidden from URL history and browser bookmarks after initial load (bc8b4ee)
+- Prevents URL injection attacks by removing sensitive data from visible URL (bc8b4ee)
+- Blocks Wayback Machine and web archive services from scraping invitation data (bc8b4ee)
+- Implements automatic data expiration to limit privacy exposure (bc8b4ee)
+- Adds cache-control and no-archive meta directives for enhanced privacy protection (bc8b4ee)
+
+### Migration Guide
+
+For users upgrading from v1.x:
+
+1. **URL Behavior Change**: After guests open their personalized invitation link, the URL will automatically clean to `https://yourdomain.com`. This is expected behavior.
+
+2. **Bookmarks**: Previous bookmarks with full paths will still work on first load, but URLs will clean automatically.
+
+3. **Data Persistence**: Invitation data now persists in browser localStorage for 30 days. Clearing browser data will require guests to click their original link again.
+
+4. **No Server Changes**: This is entirely a client-side change. No backend or database modifications required.
+
 ## [1.1.0] - 2026-02-04
 
 ### Added
@@ -188,7 +228,8 @@ git show <commit-hash>
 - [Contributing Guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
-[Unreleased]: https://github.com/mrofisr/sakeenah/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/mrofisr/sakeenah/compare/v2.0.0...HEAD
+[2.0.0]: https://github.com/mrofisr/sakeenah/compare/v1.1.0...v2.0.0
 [1.1.0]: https://github.com/mrofisr/sakeenah/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/mrofisr/sakeenah/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/mrofisr/sakeenah/compare/v0.8.0...v0.9.0
